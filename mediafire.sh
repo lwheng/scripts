@@ -8,7 +8,24 @@
 # wget -b command throws download to background
 
 INPUTFILE=$1
-cat $INPUTFILE | while read MEDIAFIRELINK
+
+if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
+then
+	rm ThisIsTheTempFileYouCannotMiss.txt
+fi
+
+cat $INPUTFILE | while read IMMATURELINK
 do
-	wget -b $(curl $MEDIAFIRELINK | grep "<body" | tr '\<' '\n' | grep "Download" | tr "\"" "\n" | grep http) 
+	stringZ=$IMMATURELINK
+	echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
 done
+
+cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
+do
+	wget -b $(curl $MATURELINK | grep "<body" | tr '\<' '\n' | grep "Download" | tr "\"" "\n" | grep http)
+done
+
+if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
+then
+	rm ThisIsTheTempFileYouCannotMiss.txt
+fi
