@@ -1,16 +1,14 @@
-# FILENAME is a text file that contains Mediafire links
-# Example:
-# http://www.mediafire.com/blablabla
+# README
+# Input file: Text file with Mediafire links
+# Outcome: Run wget jobs in background
 
-# Not sure whether it is needed, remember to hit return after your last Mediafire link i.e. enter a blank line
-# after
-
+# USAGE: ./mediafire.sh <input file>
 # This script, for now, only works for Mediafire links that has no password, and when you are lucky
 # to not encounter any captcha. Need fixing
 # wget -b command throws download to background
 
-FILENAME=$1
-cat $FILENAME | while read MEDIAFIRELINK
+INPUTFILE=$1
+cat $INPUTFILE | while read MEDIAFIRELINK
 do
 	wget -b $(curl $MEDIAFIRELINK | grep "<body" | tr '\<' '\n' | grep "Download" | tr "\"" "\n" | grep http) 
 done
