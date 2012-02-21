@@ -20,7 +20,7 @@ echo "<html>" >> adflyweb.html
 echo "<body>" >> adflyweb.html
 cat $INPUTFILE | while read LINE
 do
-    echo $(curl $LINE | grep mediafire | tr "\'" "\n" | grep mediafire) >> adflytext.txt
+    echo $(curl $LINE | grep mediafire | grep var | tr "\'" "\n" | grep mediafire) >> adflytext.txt
 done
 
 cat adflytext.txt | while read LINE1
