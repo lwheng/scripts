@@ -22,7 +22,7 @@ done
 
 cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
 do
-	wget -b $(curl $MATURELINK | grep "<body" | tr '\<' '\n' | grep "Download" | tr "\"" "\n" | grep http)
+	wget -b $(curl $MATURELINK | grep "<body" | tr '\<' '\n' | grep "Download" | tr "\"" "\n" | grep -v rockmelt | grep ^http)
 done
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
