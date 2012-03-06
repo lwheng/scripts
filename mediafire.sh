@@ -7,6 +7,8 @@
 # to not encounter any captcha. Need fixing
 # wget -b command throws download to background
 
+# Thanks to rctay for regex
+
 INPUTFILE=$1
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
@@ -22,7 +24,7 @@ done
 
 cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
 do
-	wget -b $(curl $MATURELINK | tr "\"" "\n" | grep ^http | grep -v "www" | grep -v "mediafire" | grep -v "twitter" | grep -v "gravatar" | grep -v "googleapis" | grep -v "macromedia" | grep -v "rubiconproject")
+	wget -b $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
 done
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
