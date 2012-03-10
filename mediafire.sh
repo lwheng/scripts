@@ -7,6 +7,10 @@
 # to not encounter any captcha. Need fixing
 # wget -b command throws download to background
 
+# NOTE:
+# Make sure you are using the correct grep
+# i.e. the one with the -E option
+
 # Thanks to rctay for regex
 
 INPUTFILE=$1
