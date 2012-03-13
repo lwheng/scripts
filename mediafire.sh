@@ -28,7 +28,7 @@ done
 
 cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
 do
-wget -b $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+wget -b --quiet $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
 done
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
