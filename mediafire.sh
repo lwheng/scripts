@@ -17,21 +17,21 @@ INPUTFILE=$1
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
 then
-	rm ThisIsTheTempFileYouCannotMiss.txt
+rm ThisIsTheTempFileYouCannotMiss.txt
 fi
 
 cat $INPUTFILE | while read IMMATURELINK
 do
-	stringZ=$IMMATURELINK
-	echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
+stringZ=$IMMATURELINK
+echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
 done
 
 cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
 do
-	wget -b $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+wget -b $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
 done
 
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
 then
-	rm ThisIsTheTempFileYouCannotMiss.txt
+rm ThisIsTheTempFileYouCannotMiss.txt
 fi
