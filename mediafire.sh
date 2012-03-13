@@ -23,7 +23,9 @@ fi
 cat $INPUTFILE | while read IMMATURELINK
 do
 stringZ=$IMMATURELINK
-echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
+temp=${stringZ/download.php/}
+echo ${temp/file\//\?} >> ThisIsTheTempFileYouCannotMiss.txt
+# echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
 done
 
 cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK

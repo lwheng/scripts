@@ -8,7 +8,7 @@ INPUTFILE=$1
 
 cat $INPUTFILE | while read LINE
 do
-echo $(curl $(curl $LINE | tr "\"" "\n" | tr "\'" "\n" | grep -E 'https://adf.ly/go/.*') | tr "=" "\n" | tr "\"" "\n" | grep mediafire) >> ThisIsTheTempFileYouCannotMiss.txt
+echo $(curl $(curl $LINE | tr "\"" "\n" | tr "\'" "\n" | grep "adf.ly/go/") | tr "=" "\n" | tr "\"" "\n" | grep mediafire) >> ThisIsTheTempFileYouCannotMiss.txt
 done
 cat ThisIsTheTempFileYouCannotMiss.txt
 if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
