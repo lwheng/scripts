@@ -1,10 +1,11 @@
+#!/bin/bash
+
 # README
 # Input file: Text file with Mediafire links
 # Outcome: Run wget jobs in background
 
 # USAGE: ./mediafire.sh <input file>
-# This script, for now, only works for Mediafire links that has no password, and when you are lucky
-# to not encounter any captcha. Need fixing
+# So far this script has yet to encounter captcha
 # wget -b command throws download to background
 
 # NOTE:
@@ -12,28 +13,24 @@
 # i.e. the one with the -E option
 
 # Thanks to rctay for regex
+# Thanks to benjamin for idea of curl POST-ing
 
 INPUTFILE=$1
 
-if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
-then
-rm ThisIsTheTempFileYouCannotMiss.txt
-fi
-
-cat $INPUTFILE | while read IMMATURELINK
+for LINK in $(cat $INPUTFILE)
 do
-stringZ=$IMMATURELINK
-temp=${stringZ/download.php/}
-echo ${temp/file\//\?} >> ThisIsTheTempFileYouCannotMiss.txt
-# echo ${stringZ/download.php/} >> ThisIsTheTempFileYouCannotMiss.txt
+	temp1=${LINK/download.php/}
+	temp=${temp1/file\//\?}
+	RESULT=$(curl $temp | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+	if [ -z "$RESULT" ]
+	then
+		echo "Password Protected, enter password:"
+		read password
+		RESULT1=$(curl -d "downloadp=$password" $temp | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+		# wget -b --quiet $RESULT1
+		echo $RESULT1
+	else
+		# wget -b --quiet $RESULT
+		echo $RESULT
+	fi
 done
-
-cat ThisIsTheTempFileYouCannotMiss.txt | while read MATURELINK
-do
-wget -b --quiet $(curl $MATURELINK | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
-done
-
-if [ -e ThisIsTheTempFileYouCannotMiss.txt ]
-then
-rm ThisIsTheTempFileYouCannotMiss.txt
-fi
