@@ -24,7 +24,8 @@ do
 	RESULT=$(curl $temp | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
 	if [ -z "$RESULT" ]
 	then
-		echo "Password Protected, enter password:"
+		echo "$temp is password protected"
+        echo "Please enter password:"
 		read password
 		RESULT1=$(curl -d "downloadp=$password" $temp | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
 		wget -b --quiet $RESULT1
