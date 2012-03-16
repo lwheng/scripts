@@ -27,10 +27,8 @@ do
 		echo "Password Protected, enter password:"
 		read password
 		RESULT1=$(curl -d "downloadp=$password" $temp | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
-		# wget -b --quiet $RESULT1
-		echo $RESULT1
+		wget -b --quiet $RESULT1
 	else
-		# wget -b --quiet $RESULT
-		echo $RESULT
+		wget -b --quiet $RESULT
 	fi
 done
