@@ -14,6 +14,7 @@
 
 # Thanks to rctay for regex
 # Thanks to benjamin for idea of curl POST-ing
+# Thanks to nhahtdh for checking whether wget installed
 
 # Check whether curl is installed
 command -v curl >/dev/null 2>&1 || {
