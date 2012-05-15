@@ -50,7 +50,7 @@ for LINK in $(cat $INPUTFILE)
     do
     temp1=${LINK/download.php/}
     temp=${temp1/file\//\?}
-    RESULT=$(curl $temp | tr "\'" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+    RESULT=$(curl $temp | tr "\'" "\n" | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
     if [ -z "$RESULT" ]
     then
       echo "$temp is password protected"
