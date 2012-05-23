@@ -17,17 +17,34 @@
 # Thanks to nhahtdh for checking whether wget installed
 
 # Check whether curl is installed
-command -v curl >/dev/null 2>&1 || {
-  echo "$0: curl utility not found." >&2
-  echo "$0: Please install curl package or check PATH variable." >&2
-  exit 1
+#command -v curl >/dev/null 2>&1 || {
+#  echo "$0: curl utility not found." >&2
+#  echo "$0: Please install curl package or check PATH variable." >&2
+#  exit 1
+#}
+# Check whether wget is installed
+
+{
+	[ -x /usr/xpg4/bin/grep ] && GREP=/usr/xpg4/bin/grep 
+} || {
+	[ -x /usr/bin/grep ] && GREP=/usr/bin/grep
+} || {
+	[ -x /bin/grep ] && GREP=/bin/grep
 }
 
-# Check whether wget is installed
-WGET_INSTALLED=true
+{
+	$(!command -v curl >/dev/null 2>&1) || {
+		DL_PAGE_CMD="curl %u"
+		DL_PAGE_CMD_P="curl -d \"downloadp=%p\" %u"
+		DL_FILE_CMD="curl -L -O %u"
+	}
 
-command -v wget >/dev/null 2>&1 || { 
-  WGET_INSTALLED=false
+} || {
+	$(!command -v wget >/dev/null 2>&1) || {
+		DL_PAGE_CMD="wget -qO- %u"
+		DL_PAGE_CMD_P="wget -qO- --post-data=\"downloadp=%p\" %u"
+		DL_FILE_CMD="wget -b --quiet %u &"
+	}
 }
 
 function help() {
@@ -47,27 +64,19 @@ fi
 INPUTFILE=$1
 
 for LINK in $(cat $INPUTFILE)
-    do
-    temp1=${LINK/download.php/}
-    temp=${temp1/file\//\?}
-    RESULT=$(curl $temp | tr "\'" "\n" | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
-    if [ -z "$RESULT" ]
-    then
-      echo "$temp is password protected"
-      echo "Please enter password:"
-      read password
-      RESULT1=$(curl -d "downloadp=$password" $temp | tr "\'" "\n" | tr "\"" "\n" | grep -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
-      if $WGET_INSTALLED; then
-        wget -b --quiet $RESULT1
-      else
-        curl -L -O -J $RESULT1 &
-      fi
-    else
-      if $WGET_INSTALLED; then
-        echo "Down"
-        wget -b --quiet $RESULT
-      else
-        curl -L -O -J $RESULT &
-      fi
-    fi
+do
+	temp1=${LINK/download.php/}
+	temp=${temp1/file\//\?}
+	RESULT=$(${DL_PAGE_CMD/'%u'/$temp} | tr "\'" "\n" | tr "\"" "\n" | $GREP -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+	if [ -z "$RESULT" ]
+	then
+		echo "$temp is password protected"
+		echo "Please enter password:"
+		read password
+		sub_url=${DL_PAGE_CMD_P/'%u'/$temp}
+		RESULT1=$(${sub_url/'%p'/$password} | tr "\'" "\n" | tr "\"" "\n" | $GREP -E 'http://([0-9]{1,3}\.){3}([0-9]{1,3})')
+		${DL_FILE_CMD/'%u'/$RESULT1} > /dev/null 2>&1 &
+	else
+		${DL_FILE_CMD/'%u'/$RESULT} > /dev/null 2>&1 &
+	fi
 done
