@@ -6,8 +6,9 @@
 
 INPUTFILE=$1
 
-cat $INPUTFILE | while read LINE
+for LINK in $(cat $INPUTFILE)
 do
+  LINE=${LINK/locked\//}
 echo $(curl $(curl $LINE | tr "\"" "\n" | tr "\'" "\n" | grep "adf.ly/go/") | tr "=" "\n" | tr "\"" "\n" | grep mediafire) >> ThisIsTheTempFileYouCannotMiss.txt
 done
 cat ThisIsTheTempFileYouCannotMiss.txt
