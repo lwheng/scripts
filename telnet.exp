@@ -1,0 +1,32 @@
+set sender [lindex $argv 0]
+set receiver [lindex $argv 1]
+
+spawn telnet mail.singnet.com.sg 25
+
+expect "220"
+
+send "HELO mail.singnet.com.sg\n"
+
+expect "250"
+
+send "MAIL FROM: $sender\n"
+
+expect "Sender ok"
+
+send "RCPT TO: $receiver\n"
+
+expect "Recipient ok"
+
+send "DATA\n"
+
+expect "354"
+
+send "SUBJECT: Having fun with expect command!\n"
+
+send "Hello world!\n"
+
+send ".\n"
+
+expect "delivery"
+
+send "QUIT\n"
