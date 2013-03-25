@@ -1,3 +1,5 @@
+# USAGE: expect -f telnet.exp <sender's email> <receiver's email>
+
 set sender [lindex $argv 0]
 set receiver [lindex $argv 1]
 
