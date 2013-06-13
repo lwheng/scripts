@@ -5,7 +5,7 @@ function help() {
           "   $0 <File_1> <File_2> <Market ID>\n\n" \
           "   <File_1> : The file with key:value pairs to be added to database\n" \
           "   <File_2> : The file to be compared against\n" \
-	  "   <Market ID> : The market ID\n\n" \
+          "   <Market ID> : The market ID\n\n" \
           "Output:\n" \
           "   An SQL file that contains INSERT statements for (File_1.keys - File_2.keys)" >&2;
           
@@ -65,5 +65,6 @@ rm FILE1_KEYS FILE1_FORMATTED FILE2_KEYS FILE2_FORMATTED
 #   printf "%b" "${LINE:$INDEX}"
 #   echo -ne "',1,'${MARKETID}',1)\n"
 # done < TO_BE_INSERTED
+
 cat TO_BE_INSERTED | sort | sed "s/\([a-z|\.|0-9|_|A-Z]*\)=\(.*\)/INSERT APPCONFIG \(key_name, key_value, critical_value, marketid, modified_by\) VALUES \('\1', '\2', 1, '${MARKETID}', 1)/"
 rm TO_BE_INSERTED
