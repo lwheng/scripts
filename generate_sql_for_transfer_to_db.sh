@@ -2,10 +2,9 @@
 
 function help() {
   echo -e "Usage:\n" \
-          "   $0 <File_1> <File_2> <Market ID>\n\n" \
+          "   $0 <File_1> <File_2>\n\n" \
           "   <File_1> : The file with key:value pairs to be added to database\n" \
-          "   <File_2> : The file to be compared against\n" \
-	  "   <Market ID> : The market ID\n\n" \
+          "   <File_2> : The file to be compared against\n\n" \
           "Output:\n" \
           "   An SQL file that contains INSERT statements for (File_1.keys - File_2.keys)" >&2;
           
@@ -17,11 +16,6 @@ if [[ -z "$1" ]]; then
 fi
 
 if [[ -z "$2" ]]; then
-  help
-  exit 1;
-fi
-
-if [[ -z "$3" ]]; then
   help
   exit 1;
 fi
@@ -65,5 +59,18 @@ rm FILE1_KEYS FILE1_FORMATTED FILE2_KEYS FILE2_FORMATTED
 #   printf "%b" "${LINE:$INDEX}"
 #   echo -ne "',1,'${MARKETID}',1)\n"
 # done < TO_BE_INSERTED
-cat TO_BE_INSERTED | sort | sed "s/\([a-z|\.|0-9|_|A-Z]*\)=\(.*\)/INSERT APPCONFIG \(key_name, key_value, critical_value, marketid, modified_by\) VALUES \('\1', '\2', 1, '${MARKETID}', 1)/"
+cat TO_BE_INSERTED | sort | sed "s/'/''/g" | sed "s/\([a-z|\.|0-9|_|A-Z]*\)=\(.*\)/INSERT APPCONFIG \(key_name, key_value, critical_value, marketid, modified_by\) VALUES \('\1', '\2', 1, '${MARKETID}', 1)/"
+
+cp $FILE1 TEST
+cat TO_BE_INSERTED | cut -f1 -d'=' > KEYS_TO_BE_DELETED
+
+for SEARCH in $(cat KEYS_TO_BE_DELETED)
+  do
+    grep -v "$SEARCH" TEST > TEST1
+    mv TEST1 TEST
+  done
+
 rm TO_BE_INSERTED
+rm KEYS_TO_BE_DELETED
+cp $FILE1 $FILE1.bak.properties
+mv TEST $FILE1
