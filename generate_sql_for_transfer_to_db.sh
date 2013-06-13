@@ -2,9 +2,10 @@
 
 function help() {
   echo -e "Usage:\n" \
-          "   $0 <File_1> <File_2>\n\n" \
+          "   $0 <File_1> <File_2> <Market ID>\n\n" \
           "   <File_1> : The file with key:value pairs to be added to database\n" \
-          "   <File_2> : The file to be compared against\n\n" \
+          "   <File_2> : The file to be compared against\n" \
+	  "   <Market ID> : The market ID\n\n" \
           "Output:\n" \
           "   An SQL file that contains INSERT statements for (File_1.keys - File_2.keys)" >&2;
           
@@ -16,6 +17,11 @@ if [[ -z "$1" ]]; then
 fi
 
 if [[ -z "$2" ]]; then
+  help
+  exit 1;
+fi
+
+if [[ -z "$3" ]]; then
   help
   exit 1;
 fi
